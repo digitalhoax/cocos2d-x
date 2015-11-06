@@ -94,7 +94,7 @@ public:
             _view->onGLFWframebuffersize(window, w, h);
     }
 
-    static void onGLFWWindowSizeFunCallback(GLFWwindow *window, int width, int height)
+    static void onGLFWWindowSizeFunCallback(GLFWwindow* window, int width, int height)
     {
         if (_view)
             _view->onGLFWWindowSizeFunCallback(window, width, height);
@@ -329,7 +329,18 @@ GLViewImpl* GLViewImpl::createWithFullScreen(const std::string& viewName)
     return nullptr;
 }
 
-GLViewImpl* GLViewImpl::createWithFullScreen(const std::string& viewName, const GLFWvidmode &videoMode, GLFWmonitor *monitor)
+GLViewImpl* GLViewImpl::createWithFullScreen(const std::string& viewName, Size resolution)
+{
+    auto ret = new (std::nothrow) GLViewImpl();
+    if(ret && ret->initWithFullScreen(viewName, resolution)) {
+        ret->autorelease();
+        return ret;
+    }
+    CC_SAFE_DELETE(ret);
+    return nullptr;
+}
+
+GLViewImpl* GLViewImpl::createWithFullScreen(const std::string& viewName, const GLFWvidmode& videoMode, GLFWmonitor* monitor)
 {
     auto ret = new (std::nothrow) GLViewImpl();
     if(ret && ret->initWithFullscreen(viewName, videoMode, monitor)) {
@@ -439,7 +450,17 @@ bool GLViewImpl::initWithFullScreen(const std::string& viewName)
     return initWithRect(viewName, Rect(0, 0, videoMode->width, videoMode->height), 1.0f);
 }
 
-bool GLViewImpl::initWithFullscreen(const std::string &viewname, const GLFWvidmode &videoMode, GLFWmonitor *monitor)
+bool GLViewImpl::initWithFullScreen(const std::string& viewName, Size resolution)
+{
+    //Create fullscreen window on primary monitor at its current video mode.
+    _monitor = glfwGetPrimaryMonitor();
+    if (nullptr == _monitor)
+        return false;
+    
+    return initWithRect(viewName, Rect(0, 0, resolution.width, resolution.height), 1.0f);
+}
+
+bool GLViewImpl::initWithFullscreen(const std::string& viewName, const GLFWvidmode& videoMode, GLFWmonitor* monitor)
 {
     //Create fullscreen on specified monitor at the specified video mode.
     _monitor = monitor;
@@ -452,7 +473,7 @@ bool GLViewImpl::initWithFullscreen(const std::string &viewname, const GLFWvidmo
     glfwWindowHint(GLFW_BLUE_BITS, videoMode.blueBits);
     glfwWindowHint(GLFW_GREEN_BITS, videoMode.greenBits);
     
-    return initWithRect(viewname, Rect(0, 0, videoMode.width, videoMode.height), 1.0f);
+    return initWithRect(viewName, Rect(0, 0, videoMode.width, videoMode.height), 1.0f);
 }
 
 bool GLViewImpl::isOpenGLReady()
@@ -718,7 +739,7 @@ void GLViewImpl::onGLFWMouseScrollCallback(GLFWwindow* window, double x, double 
     Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
 }
 
-void GLViewImpl::onGLFWKeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
+void GLViewImpl::onGLFWKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (GLFW_REPEAT != action)
     {
@@ -733,7 +754,7 @@ void GLViewImpl::onGLFWKeyCallback(GLFWwindow *window, int key, int scancode, in
     }
 }
 
-void GLViewImpl::onGLFWCharCallback(GLFWwindow *window, unsigned int character)
+void GLViewImpl::onGLFWCharCallback(GLFWwindow* window, unsigned int character)
 {
     char16_t wcharString[2] = { (char16_t) character, 0 };
     std::string utf8String;
@@ -742,7 +763,7 @@ void GLViewImpl::onGLFWCharCallback(GLFWwindow *window, unsigned int character)
     IMEDispatcher::sharedDispatcher()->dispatchInsertText( utf8String.c_str(), utf8String.size() );
 }
 
-void GLViewImpl::onGLFWWindowPosCallback(GLFWwindow *windows, int x, int y)
+void GLViewImpl::onGLFWWindowPosCallback(GLFWwindow* windows, int x, int y)
 {
     Director::getInstance()->setViewport();
 }
@@ -776,7 +797,7 @@ void GLViewImpl::onGLFWframebuffersize(GLFWwindow* window, int w, int h)
     }
 }
 
-void GLViewImpl::onGLFWWindowSizeFunCallback(GLFWwindow *window, int width, int height)
+void GLViewImpl::onGLFWWindowSizeFunCallback(GLFWwindow* window, int width, int height)
 {
     if (_resolutionPolicy != ResolutionPolicy::UNKNOWN)
     {
@@ -800,7 +821,7 @@ void GLViewImpl::onGLFWWindowIconifyCallback(GLFWwindow* window, int iconified)
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 static bool glew_dynamic_binding()
 {
-    const char *gl_extensions = (const char*)glGetString(GL_EXTENSIONS);
+    const char* gl_extensions = (const char*)glGetString(GL_EXTENSIONS);
 
     // If the current opengl driver doesn't have framebuffers methods, check if an extension exists
     if (glGenFramebuffers == nullptr)
