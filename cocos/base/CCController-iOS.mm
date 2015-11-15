@@ -341,7 +341,7 @@ bool Controller::isConnected() const
     return _impl->_gcController.isAttachedToDevice == YES;
 }
 
-void Controller::receiveExternalKeyEvent(int externalKeyCode,bool receive)
+void Controller::receiveExternalKeyEvent(Key externalKeyCode, bool receive)
 {
 }
 
