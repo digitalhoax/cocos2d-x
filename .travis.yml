@@ -2,13 +2,7 @@ osx_image: xcode7
 language: objective-c
 xcode_project: "./build/cocos2d_libs.xcodeproj"
 xcode_scheme: "libcocos2d iOS"
-deploy:
-  provider: releases
-  api_key: 93b69c17765ea07720da0efc3857620d8c6d3ed1
-  file: ''
-  skip_cleanup: true
-  on:
-    tags: true
+
 # whitelist
 branches:
   only:
