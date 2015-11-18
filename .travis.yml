@@ -4,7 +4,7 @@ xcode_project: "./build/cocos2d_libs.xcodeproj"
 xcode_scheme: "libcocos2d iOS"
 
 before_install:
-  - py download-deps.py
+  - python download-deps.py
 
 # whitelist
 branches:
