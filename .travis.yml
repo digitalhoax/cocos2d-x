@@ -3,7 +3,7 @@ language: objective-c
 xcode_project: "./build/cocos2d_libs.xcodeproj"
 xcode_scheme: "libcocos2d iOS"
 
-before-install:
+before_install:
   - py download-deps.py
 
 # whitelist
