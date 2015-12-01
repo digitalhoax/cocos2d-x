@@ -1,12 +1,22 @@
 osx_image: xcode7
 language: objective-c
-xcode_project: "./build/cocos2d_libs.xcodeproj"
-xcode_scheme: "libcocos2d iOS"
-
 before_install:
-  - python download-deps.py
-
-# whitelist
+- python download-deps.py
+script: :/build/build_all_targets.sh
 branches:
   only:
-    - tvos
+  - tvos
+deploy:
+  provider: releases
+  api_key:
+    secure: w7IB5kawD8zYmFLkbD5nwFP3iw2xL49lVHAGqoyz+pYLcK4XPk8BI46QRuVTlsLFEcPFR/lPv8zpV/oKlMiW/FdPfGWD8YlZIgAY1HzZ+3+7IDSl1zX1coMdpRKQ4m8A59hrRUrjIGRocpIgY9o+u/r8eA8d3So3V+eZLAPyspuVWICLXLbknYlOlx8zELpyAC0tWM+UOolFXC1ZyywTBc+eMro4jpG21O8OAiuh8JvwhkRhtTWWAomuJV1MPZudwKIL4yqMtnzl0+ekE8XYyjcC0GfyqZy5JiqjklQ+dfx2jGgipuoaDDZwD4PV/Zdb4L5Crt1xD4JcqFOsabTNOTvGdhYa7Fmbzzbujq/x6jeshB52ePGCwpKo4z1s/Z6uR518Kdxou23BzWOJohl4sA4PEK0G5mf+ZO0OM6UJkho0EQEpc94JNXD9EA2OIk8aGPBLC0K2agaexX9B4tdFEuZ9Erj0DeKofZBerorCGnyFC00lYCEyWnTS/2ITtFu8jFVWC3Z8kbrWoa2TH6agLPXtp5hklOhcpy2BsJ5bWnAtG59C5LrWWpE/Z3c+Eb6G43D59SnQZFExcUwnHM4s5snoD8WiraSlGsAbedftPanOJv2PFEL7VD+c0hz9rDorkUIj/cYe8iom8FoAQXk0mAEx3fV1YU1tLE4hNn9LZHg=
+  file:
+    - "./build/build/Products/Release-iphoneos/libcocos2d\ iOS.a"
+    - "./build/build/Products/Debug-iphoneos/libcocos2d\ iOS.a"
+    - "./build/build/Products/Release/libcocos2d\ Mac.a"
+    - "./build/build/Products/Debug/libcocos2d\ Mac.a"
+    - "./build/build/Products/Release-appletvos/libcocos2d\ tvOS.a"
+    - "./build/build/Products/Debug-appletvos/libcocos2d\ tvOS.a"
+  on:
+    repo: digitalhoax/cocos2d-x
+    branch: tvos
